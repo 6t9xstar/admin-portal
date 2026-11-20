@@ -1,0 +1,13 @@
+# Open-Source Admin Portal - API Guard
+Options -Indexes -MultiViews
+
+# Block direct HTTP access to credentials, settings, and state JSON files
+<FilesMatch "^(auth\.json|settings\.json|pages\.json|.*\.log)$">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order Allow,Deny
+    Deny from all
+  </IfModule>
+</FilesMatch>

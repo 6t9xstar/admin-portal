@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Static Admin Portal — Universal Website & SEO Manager</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #F8FAFC;
+      --surface: #FFFFFF;
+      --surface-2: #F1F5F9;
+      --border: #E2E8F0;
+      --text: #0F172A;
+      --muted: #64748B;
+      --primary: #1D4ED8;
+      --primary-hover: #1E40AF;
+      --danger: #DC2626;
+      --success: #16A34A;
+      --warn: #D97706;
+    }
+    [data-theme="dark"] {
+      --bg: #0B1120;
+      --surface: #111827;
+      --surface-2: #1E293B;
+      --border: #1F2937;
+      --text: #F8FAFC;
+      --muted: #94A3B8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+    .shell { display: flex; min-height: 100vh; }
+    aside {
+      width: 250px;
+      background: #0B1120;
+      color: #FFF;
+      display: flex;
+      flex-direction: column;
+      padding: 1.25rem;
+      border-right: 1px solid rgba(255,255,255,0.08);
+      flex-shrink: 0;
+    }
+    .logo {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 1.15rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 1.75rem;
+    }
+    .badge {
+      font-size: 0.65rem;
+      background: var(--primary);
+      color: #FFF;
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    nav { display: flex; flex-direction: column; gap: 0.35rem; flex: 1; }
+    .nav-btn {
+      background: transparent;
+      border: none;
+      color: rgba(255,255,255,0.72);
+      padding: 0.65rem 0.85rem;
+      border-radius: 0.5rem;
+      text-align: left;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      transition: all 0.15s;
+    }
+    .nav-btn:hover { background: rgba(255,255,255,0.08); color: #FFF; }
+    .nav-btn.active { background: var(--primary); color: #FFF; font-weight: 600; }
+
+    .main-wrap { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+    .topbar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0.9rem 1.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .topbar h1 { font-family: 'Outfit', sans-serif; font-size: 1.2rem; font-weight: 700; }
+    .content { padding: 1.75rem; max-width: 1120px; width: 100%; margin: 0 auto; }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .card h2 { font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 0.35rem; }
+    .desc { font-size: 0.85rem; color: var(--muted); margin-bottom: 1.25rem; }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+    @media (max-width: 820px) {
+      .shell { flex-direction: column; }
+      aside { width: 100%; }
+      nav { flex-direction: row; flex-wrap: wrap; }
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    }
+
+    .form-group { margin-bottom: 1rem; }
+    label { display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.35rem; }
+    .hint { font-weight: 400; color: var(--muted); }
+    input, textarea, select {
+      width: 100%;
+      padding: 0.6rem 0.8rem;
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 0.875rem;
+      font-family: inherit;
+    }
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(29,78,216,0.15);
+    }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+      padding: 0.6rem 1.1rem; border-radius: 0.5rem; font-size: 0.85rem; font-weight: 600;
+      cursor: pointer; border: none; transition: 0.15s; text-decoration: none;
+    }
+    .btn-primary { background: var(--primary); color: #FFF; }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
+    .btn-outline:hover { background: var(--surface-2); }
+    .btn-danger { background: rgba(220,38,38,0.12); color: var(--danger); }
+
+    .serp-box {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin-bottom: 1.25rem;
+    }
+    .serp-url { font-size: 0.75rem; color: var(--success); margin-bottom: 0.2rem; }
+    .serp-title { font-size: 1.05rem; color: #1a0dab; font-weight: 500; margin-bottom: 0.25rem; }
+    [data-theme="dark"] .serp-title { color: #8ab4f8; }
+    .serp-desc { font-size: 0.82rem; color: var(--muted); line-height: 1.45; }
+
+    .page-pills { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
+    .page-pill {
+      padding: 0.35rem 0.75rem; border-radius: 999px; font-size: 0.78rem; font-weight: 600;
+      border: 1px solid var(--border); background: var(--surface-2); color: var(--text); cursor: pointer;
+    }
+    .page-pill.active { background: var(--primary); color: #FFF; border-color: var(--primary); }
+
+    .media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 1rem; margin-top: 1rem; }
+    .media-card {
+      border: 1px solid var(--border); border-radius: 0.5rem; padding: 0.5rem; background: var(--bg);
+      display: flex; flex-direction: column; gap: 0.4rem;
+    }
+    .media-card img { width: 100%; height: 92px; object-fit: cover; border-radius: 0.35rem; }
+    .media-name { font-size: 0.72rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    .drop-zone {
+      border: 2px dashed var(--border); border-radius: 0.65rem; padding: 1.75rem;
+      text-align: center; cursor: pointer; background: var(--bg);
+    }
+    .drop-zone:hover { border-color: var(--primary); }
+
+    .auth-screen { max-width: 440px; margin: 4rem auto; padding: 0 1rem; }
+    .toast {
+      position: fixed; bottom: 1.25rem; right: 1.25rem; padding: 0.75rem 1.15rem;
+      background: #0F172A; color: #FFF; border-radius: 0.5rem; font-size: 0.85rem;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.25); z-index: 999; display: none;
+    }
+    .toast.success { border-left: 4px solid var(--success); }
+    .toast.error { border-left: 4px solid var(--danger); }
+  </style>
+</head>
+<body>
+
+  <!-- AUTH / SETUP SCREENS -->
+  <div id="view-loading" class="auth-screen">
+    <div class="card" style="text-align:center;">Connecting to Admin API…</div>
+  </div>
+
+  <div id="view-setup" class="auth-screen" style="display:none;">
+    <div class="card">
+      <h2>Setup Admin Portal</h2>
+      <p class="desc">Create your encrypted administrator credentials. Credentials are stored hashed outside public HTML access.</p>
+      <form onsubmit="handleSetup(event)">
+        <div class="form-group">
+          <label>Admin Email</label>
+          <input type="email" id="setup-email" required placeholder="admin@yourdomain.com" />
+        </div>
+        <div class="form-group">
+          <label>Master Password <span class="hint">min 10 chars</span></label>
+          <input type="password" id="setup-password" required minlength="10" placeholder="Strong passphrase…" />
+        </div>
+        <div class="form-group">
+          <label>Confirm Password</label>
+          <input type="password" id="setup-password-confirm" required minlength="10" />
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%;">Initialize Admin Portal</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="view-login" class="auth-screen" style="display:none;">
+    <div class="card">
+      <h2>Admin Portal Login</h2>
+      <p class="desc">Sign in to manage website pages, SEO metadata, headers, and media.</p>
+      <form onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label>Admin Email</label>
+          <input type="email" id="login-email" required placeholder="admin@yourdomain.com" />
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="login-password" required />
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%;">Sign In</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MAIN PORTAL SHELL -->
+  <div id="view-app" class="shell" style="display:none;">
+    <aside>
+      <div class="logo">
+        <span>⚡ Admin Portal</span>
+        <span class="badge">OSS</span>
+      </div>
+      <nav>
+        <button class="nav-btn active" data-tab="pages" onclick="switchTab('pages', this)">📄 All Pages & SEO</button>
+        <button class="nav-btn" data-tab="settings" onclick="switchTab('settings', this)">⚙️ Header & Site Info</button>
+        <button class="nav-btn" data-tab="media" onclick="switchTab('media', this)">🖼️ Media Library</button>
+        <button class="nav-btn" data-tab="security" onclick="switchTab('security', this)">🔐 Security</button>
+      </nav>
+      <div style="margin-top:1.5rem; padding-top:1rem; border-top:1px solid rgba(255,255,255,0.1); display:flex; flex-direction:column; gap:0.5rem;">
+        <button class="nav-btn" onclick="toggleTheme()">🌓 Toggle Dark/Light</button>
+        <a href="/" target="_blank" class="nav-btn">↗ Open Live Website</a>
+        <button class="nav-btn" style="color:#FCA5A5;" onclick="logout()">🚪 Logout</button>
+      </div>
+    </aside>
+
+    <div class="main-wrap">
+      <div class="topbar">
+        <h1 id="topbar-title">All Pages & SEO Manager</h1>
+        <span id="admin-badge" style="font-size:0.8rem; color:var(--muted);"></span>
+      </div>
+
+      <div class="content">
+        <!-- TAB 1: ALL PAGES & SEO MANAGER -->
+        <section id="tab-pages">
+          <div class="card">
+            <h2>Select or Add Any Website Page</h2>
+            <p class="desc">Manage SEO title, meta description, hero headline, hero image, CTA buttons, and live notices for any page route on your site.</p>
+
+            <div class="page-pills" id="saved-page-pills"></div>
+
+            <div class="grid-2" style="align-items:end; margin-bottom:1.25rem;">
+              <div class="form-group" style="margin-bottom:0;">
+                <label>Page URL Route <span class="hint">e.g. / or /pricing/ or /about/</span></label>
+                <input type="text" id="page-route" value="/" placeholder="/services/my-service/" oninput="updateSerp()" />
+              </div>
+              <div style="display:flex; gap:0.5rem;">
+                <button type="button" class="btn btn-outline" onclick="loadRouteIntoForm(document.getElementById('page-route').value)">Load Route</button>
+                <button type="button" class="btn btn-danger" onclick="deleteCurrentPage()">Clear Override</button>
+              </div>
+            </div>
+
+            <!-- Live Google SERP Preview -->
+            <div class="serp-box">
+              <div class="serp-url" id="serp-url">https://yourdomain.com/</div>
+              <div class="serp-title" id="serp-title">Page Title Preview</div>
+              <div class="serp-desc" id="serp-desc">Meta description preview appears here as Google renders it in search results.</div>
+            </div>
+
+            <form onsubmit="savePageOverride(event)">
+              <div class="grid-2">
+                <div class="form-group">
+                  <label>SEO Title <span class="hint" id="cnt-title">0 / 60</span></label>
+                  <input type="text" id="page-seoTitle" placeholder="Leave blank to keep static HTML title" oninput="updateSerp()" />
+                </div>
+                <div class="form-group">
+                  <label>Primary CTA Button Text</label>
+                  <input type="text" id="page-ctaText" placeholder="e.g. Get Your Free Quote" />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>SEO Meta Description <span class="hint" id="cnt-desc">0 / 160</span></label>
+                <textarea id="page-seoDescription" rows="2" placeholder="Compelling 140–160 char search summary…" oninput="updateSerp()"></textarea>
+              </div>
+
+              <div class="grid-2">
+                <div class="form-group">
+                  <label>Hero Heading (H1 Override)</label>
+                  <input type="text" id="page-heroHeading" placeholder="Overrides main page H1" />
+                </div>
+                <div class="form-group">
+                  <label>Primary CTA Link URL</label>
+                  <input type="text" id="page-ctaLink" placeholder="e.g. /contact/" />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>Hero Subheading / Lead Paragraph</label>
+                <textarea id="page-heroSubheading" rows="2" placeholder="Overrides hero intro paragraph"></textarea>
+              </div>
+
+              <div class="grid-2">
+                <div class="form-group">
+                  <label>Hero Image / Banner URL</label>
+                  <input type="text" id="page-heroImage" placeholder="/assets/uploads/hero-banner.jpg" />
+                </div>
+                <div class="form-group">
+                  <label>Page Top Banner / Notice (Optional)</label>
+                  <input type="text" id="page-bannerNotice" placeholder="Special page-specific notice…" />
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-primary">Publish Page Changes Live</button>
+            </form>
+          </div>
+        </section>
+
+        <!-- TAB 2: GLOBAL HEADER & SITE INFO -->
+        <section id="tab-settings" style="display:none;">
+          <div class="card">
+            <h2>Global Header, Announcement & Contact Info</h2>
+            <p class="desc">Updates header phone, email, announcement bar, and CTA links across every page immediately.</p>
+            <form onsubmit="saveSettings(event)">
+              <div class="grid-2">
+                <div class="form-group">
+                  <label>Site / Brand Name</label>
+                  <input type="text" id="set-siteName" required />
+                </div>
+                <div class="form-group">
+                  <label>Display Phone</label>
+                  <input type="text" id="set-phone" required />
+                </div>
+              </div>
+              <div class="grid-2">
+                <div class="form-group">
+                  <label>Contact Email</label>
+                  <input type="email" id="set-email" required />
+                </div>
+                <div class="form-group">
+                  <label>Business Hours</label>
+                  <input type="text" id="set-hours" />
+                </div>
+              </div>
+              <div class="grid-2">
+                <div class="form-group">
+                  <label>Header CTA Button Label</label>
+                  <input type="text" id="set-ctaLabel" />
+                </div>
+                <div class="form-group">
+                  <label>Header CTA Button URL</label>
+                  <input type="text" id="set-ctaUrl" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Announcement Bar Text</label>
+                <input type="text" id="set-announcement" />
+              </div>
+              <div class="grid-2">
+                <div class="form-group">
+                  <label>Logo URL (Optional)</label>
+                  <input type="text" id="set-logoUrl" placeholder="/assets/uploads/logo.png" />
+                </div>
+                <div class="form-group">
+                  <label>Office Address</label>
+                  <input type="text" id="set-address" />
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary">Save Global Settings</button>
+            </form>
+          </div>
+        </section>
+
+        <!-- TAB 3: MEDIA LIBRARY -->
+        <section id="tab-media" style="display:none;">
+          <div class="card">
+            <h2>Media Library & Image Upload</h2>
+            <p class="desc">Upload JPG, PNG, WebP, AVIF, or SVG files (max 15MB) directly into <code>/assets/uploads/</code>.</p>
+            <div class="drop-zone" onclick="document.getElementById('media-input').click()">
+              <strong>Click to upload an image</strong>
+              <p style="font-size:0.8rem; color:var(--muted); margin-top:0.25rem;">Validated server-side via MIME & extension inspection</p>
+              <input type="file" id="media-input" accept="image/*" style="display:none;" onchange="uploadMedia(this.files[0])" />
+            </div>
+            <div id="media-grid" class="media-grid"></div>
+          </div>
+        </section>
+
+        <!-- TAB 4: SECURITY -->
+        <section id="tab-security" style="display:none;">
+          <div class="card">
+            <h2>Change Administrator Password</h2>
+            <p class="desc">Uses PHP <code>password_hash()</code> and rotates HMAC session secrets across all devices.</p>
+            <form onsubmit="changePassword(event)" style="max-width:460px;">
+              <div class="form-group">
+                <label>Current Password</label>
+                <input type="password" id="sec-current" required />
+              </div>
+              <div class="form-group">
+                <label>New Password <span class="hint">min 10 chars</span></label>
+                <input type="password" id="sec-new" required minlength="10" />
+              </div>
+              <button type="submit" class="btn btn-primary">Update Password</button>
+            </form>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script>
+    const API = '/admin/api/index.php';
+    const STATE = { pages: {}, media: [], theme: localStorage.getItem('admin-theme') || 'light' };
+    document.documentElement.setAttribute('data-theme', STATE.theme);
+
+    function toggleTheme() {
+      STATE.theme = STATE.theme === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', STATE.theme);
+      localStorage.setItem('admin-theme', STATE.theme);
+    }
+
+    function toast(msg, err = false) {
+      const el = document.getElementById('toast');
+      el.textContent = msg;
+      el.className = 'toast ' + (err ? 'error' : 'success');
+      el.style.display = 'block';
+      setTimeout(() => { el.style.display = 'none'; }, 3600);
+    }
+
+    async function api(action, opts = {}) {
+      const headers = { 'X-Requested-With': 'fetch', ...(opts.headers || {}) };
+      const res = await fetch(`${API}?action=${encodeURIComponent(action)}`, { ...opts, headers, credentials: 'same-origin' });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || `Error ${res.status}`);
+      return data;
+    }
+
+    function switchTab(name, btn) {
+      document.querySelectorAll('.nav-btn[data-tab]').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      ['pages', 'settings', 'media', 'security'].forEach(t => {
+        document.getElementById(`tab-${t}`).style.display = t === name ? 'block' : 'none';
+      });
+      const titles = { pages: 'All Pages & SEO Manager', settings: 'Header & Global Settings', media: 'Media Library', security: 'Security & Password' };
+      document.getElementById('topbar-title').textContent = titles[name] || 'Admin';
+    }
+
+    async function boot() {
+      try {
+        const s = await api('status');
+        document.getElementById('view-loading').style.display = 'none';
+        if (s.needsSetup) {
+          document.getElementById('view-setup').style.display = 'block';
+        } else if (!s.authenticated) {
+          document.getElementById('view-login').style.display = 'block';
+        } else {
+          document.getElementById('admin-badge').textContent = s.adminEmail || 'Authenticated';
+          document.getElementById('view-app').style.display = 'flex';
+          await Promise.all([loadPages(), loadSettings(), loadMedia()]);
+        }
+      } catch (e) {
+        toast('Failed to connect: ' + e.message, true);
+      }
+    }
+
+    async function handleSetup(e) {
+      e.preventDefault();
+      const email = document.getElementById('setup-email').value.trim();
+      const p1 = document.getElementById('setup-password').value;
+      const p2 = document.getElementById('setup-password-confirm').value;
+      if (p1 !== p2) return toast('Passwords do not match', true);
+      try {
+        await api('setup', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password: p1 }) });
+        location.reload();
+      } catch (err) { toast(err.message, true); }
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      try {
+        await api('login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: document.getElementById('login-email').value.trim(), password: document.getElementById('login-password').value })
+        });
+        location.reload();
+      } catch (err) { toast(err.message, true); }
+    }
+
+    async function logout() {
+      await api('logout');
+      location.reload();
+    }
+
+    function updateSerp() {
+      const route = document.getElementById('page-route').value || '/';
+      const title = document.getElementById('page-seoTitle').value || 'Page Title Preview';
+      const desc = document.getElementById('page-seoDescription').value || 'Meta description preview appears here as Google renders it in search results.';
+      document.getElementById('serp-url').textContent = `${location.origin}${route.startsWith('/') ? route : '/' + route}`;
+      document.getElementById('serp-title').textContent = title;
+      document.getElementById('serp-desc').textContent = desc;
+      document.getElementById('cnt-title').textContent = `${document.getElementById('page-seoTitle').value.length} / 60`;
+      document.getElementById('cnt-desc').textContent = `${document.getElementById('page-seoDescription').value.length} / 160`;
+    }
+
+    function renderPagePills() {
+      const defaults = ['/', '/about/', '/pricing/', '/services/', '/contact/'];
+      const keys = Array.from(new Set([...defaults, ...Object.keys(STATE.pages)]));
+      const current = document.getElementById('page-route').value.trim() || '/';
+      document.getElementById('saved-page-pills').innerHTML = keys.map(r => `
+        <button type="button" class="page-pill ${r === current ? 'active' : ''}" onclick="loadRouteIntoForm('${r}')">${r}${STATE.pages[r] ? ' ✓' : ''}</button>
+      `).join('');
+    }
+
+    function loadRouteIntoForm(route) {
+      const r = route.trim() === '' ? '/' : (route.startsWith('/') ? route : '/' + route);
+      document.getElementById('page-route').value = r;
+      const p = STATE.pages[r] || {};
+      ['seoTitle', 'seoDescription', 'heroHeading', 'heroSubheading', 'heroImage', 'ctaText', 'ctaLink', 'bannerNotice'].forEach(k => {
+        document.getElementById(`page-${k}`).value = p[k] || '';
+      });
+      renderPagePills();
+      updateSerp();
+    }
+
+    async function loadPages() {
+      const res = await api('get_pages');
+      STATE.pages = res.pages || {};
+      renderPagePills();
+      loadRouteIntoForm(document.getElementById('page-route').value);
+    }
+
+    async function savePageOverride(e) {
+      e.preventDefault();
+      const payload = { route: document.getElementById('page-route').value.trim() || '/' };
+      ['seoTitle', 'seoDescription', 'heroHeading', 'heroSubheading', 'heroImage', 'ctaText', 'ctaLink', 'bannerNotice'].forEach(k => {
+        payload[k] = document.getElementById(`page-${k}`).value;
+      });
+      try {
+        const res = await api('save_page', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+        STATE.pages[res.route] = res.page;
+        renderPagePills();
+        toast(`Saved live changes for ${res.route}`);
+      } catch (err) { toast(err.message, true); }
+    }
+
+    async function deleteCurrentPage() {
+      const route = document.getElementById('page-route').value.trim() || '/';
+      try {
+        await api('delete_page', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ route }) });
+        delete STATE.pages[route];
+        loadRouteIntoForm(route);
+        toast(`Removed override for ${route}`);
+      } catch (err) { toast(err.message, true); }
+    }
+
+    async function loadSettings() {
+      const res = await api('get_settings');
+      const s = res.settings || {};
+      ['siteName', 'phone', 'email', 'hours', 'ctaLabel', 'ctaUrl', 'announcement', 'logoUrl', 'address'].forEach(k => {
+        const el = document.getElementById(`set-${k}`);
+        if (el) el.value = s[k] || '';
+      });
+    }
+
+    async function saveSettings(e) {
+      e.preventDefault();
+      const settings = {};
+      ['siteName', 'phone', 'email', 'hours', 'ctaLabel', 'ctaUrl', 'announcement', 'logoUrl', 'address'].forEach(k => {
+        settings[k] = document.getElementById(`set-${k}`).value;
+      });
+      try {
+        await api('save_settings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ settings }) });
+        toast('Global settings updated live!');
+      } catch (err) { toast(err.message, true); }
+    }
+
+    async function loadMedia() {
+      const res = await api('list_media');
+      STATE.media = res.media || [];
+      const grid = document.getElementById('media-grid');
+      if (!STATE.media.length) {
+        grid.innerHTML = '<p style="color:var(--muted); font-size:0.85rem;">No images uploaded yet.</p>';
+        return;
+      }
+      grid.innerHTML = STATE.media.map(m => `
+        <div class="media-card">
+          <img src="${m.url}" alt="${m.name}" loading="lazy" />
+          <div class="media-name" title="${m.name}">${m.name}</div>
+          <div style="display:flex; gap:0.35rem;">
+            <button type="button" class="btn btn-outline" style="padding:0.25rem 0.45rem; font-size:0.72rem; flex:1;" onclick="navigator.clipboard.writeText('${m.url}'); toast('Copied URL!')">Copy</button>
+            <button type="button" class="btn btn-danger" style="padding:0.25rem 0.45rem; font-size:0.72rem;" onclick="deleteMedia('${m.name}')">✕</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function uploadMedia(file) {
+      if (!file) return;
+      const fd = new FormData();
+      fd.append('file', file);
+      toast('Uploading ' + file.name + '…');
+      try {
+        await api('upload_media', { method: 'POST', body: fd });
+        toast('Image uploaded!');
+        await loadMedia();
+      } catch (err) { toast(err.message, true); }
+    }
+
+    async function deleteMedia(name) {
+      try {
+        await api('delete_media', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name }) });
+        toast('Deleted ' + name);
+        await loadMedia();
+      } catch (err) { toast(err.message, true); }
+    }
+
+    async function changePassword(e) {
+      e.preventDefault();
+      try {
+        await api('change_password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            currentPassword: document.getElementById('sec-current').value,
+            newPassword: document.getElementById('sec-new').value
+          })
+        });
+        document.getElementById('sec-current').value = '';
+        document.getElementById('sec-new').value = '';
+        toast('Master password updated!');
+      } catch (err) { toast(err.message, true); }
+    }
+
+    window.addEventListener('DOMContentLoaded', boot);
+  </script>
+</body>
+</html>

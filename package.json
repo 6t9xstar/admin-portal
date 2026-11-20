@@ -1,0 +1,36 @@
+{
+  "name": "admin-portal",
+  "version": "1.0.0",
+  "description": "Open-source zero-database Admin Portal for managing every page, SEO metadata, headers, and media on static HTML, Astro, Next.js, and Hugo websites — includes both a drop-in Hosted PHP 8.1+ Admin (/admin) and a Local-First Node.js CMS.",
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/6t9xstar/admin-portal.git"
+  },
+  "homepage": "https://github.com/6t9xstar/admin-portal#readme",
+  "bugs": {
+    "url": "https://github.com/6t9xstar/admin-portal/issues"
+  },
+  "keywords": [
+    "admin-portal",
+    "static-site-cms",
+    "flat-file-cms",
+    "php-admin-panel",
+    "astro-cms",
+    "headless-cms",
+    "seo-manager",
+    "no-database-cms",
+    "hostinger",
+    "mdx-editor",
+    "media-library"
+  ],
+  "scripts": {
+    "start:local": "node local-cms/server.mjs",
+    "check:syntax": "node --check local-cms/server.mjs && node --check local-cms/public/app.js && node --check hosted-php/scripts/live-overrides.js"
+  },
+  "dependencies": {
+    "busboy": "^1.6.0",
+    "gray-matter": "^4.0.3"
+  }
+}

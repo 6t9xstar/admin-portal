@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Runtime credentials, state, and uploaded media (never commit)
+auth.json
+settings.json
+pages.json
+admin-config.json
+activity.json
+hosted-php/admin/api/auth.json
+hosted-php/admin/api/settings.json
+hosted-php/admin/api/pages.json
+hosted-php/assets/uploads/
+local-cms/admin-config.json
+local-cms/activity.json
+
+# OS & Logs
+.DS_Store
+Thumbs.db
+*.log
+.env
+.env.*

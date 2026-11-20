@@ -1,0 +1,11 @@
+{
+  "siteName": "My Website",
+  "phone": "+1 (555) 000-0000",
+  "email": "hello@example.com",
+  "hours": "Mon–Fri 9:00 AM – 5:00 PM",
+  "ctaLabel": "Get Started",
+  "ctaUrl": "/contact/",
+  "announcement": "Welcome — customize your announcement text from /admin/",
+  "logoUrl": "",
+  "address": "123 Main Street, Suite 100"
+}
