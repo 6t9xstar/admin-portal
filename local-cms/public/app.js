@@ -1,4 +1,4 @@
-/* Apex Admin — SPA application */
+/* Admin Portal — SPA application */
 'use strict';
 
 /* ---------- helpers ---------- */
@@ -86,7 +86,7 @@ const I = {
 const starsHtml = (n) => { n = Number(n) || 0; return `<span class="stars">${'★'.repeat(n)}<span class="off">${'★'.repeat(5 - n)}</span></span>`; };
 
 /* ---------- state ---------- */
-const S = { posts: [], reviews: [], clients: [], media: [], categories: [], settings: {}, stats: null, editor: null, theme: localStorage.getItem('apex-admin-theme') || 'light' };
+const S = { posts: [], reviews: [], clients: [], media: [], categories: [], settings: {}, stats: null, editor: null, theme: localStorage.getItem('admin-portal-theme') || 'light' };
 document.documentElement.setAttribute('data-theme', S.theme);
 
 const NAV = [
@@ -99,8 +99,8 @@ const NAV = [
 async function showAuth() {
   const { needsSetup } = await api('/setup-status');
   $('#app').innerHTML = `<div class="auth-screen"><div class="auth-card">
-    <div class="auth-logo"><span class="bolt">${I.bolt}</span> Apex Admin</div>
-    <p class="auth-sub">${needsSetup ? 'First run — create your admin password (min 10 characters). This dashboard runs on your machine only.' : 'Content manager for Apex Electric Estimating. Enter your admin password.'}</p>
+    <div class="auth-logo"><span class="bolt">${I.bolt}</span> Admin Portal</div>
+    <p class="auth-sub">${needsSetup ? 'First run — create your admin password (min 10 characters). This dashboard runs on your machine only.' : 'Static site content manager. Enter your admin password.'}</p>
     <div class="auth-error" id="auth-err"></div>
     <form id="auth-form">
       <div class="field"><label>Password <span class="req">*</span></label><input type="password" id="auth-pass" autocomplete="${needsSetup ? 'new-password' : 'current-password'}" required /></div>
@@ -129,7 +129,7 @@ async function showAuth() {
 function shell() {
   $('#app').innerHTML = `<div class="shell">
     <aside class="sidebar" id="sidebar">
-      <div class="side-brand"><span class="bolt">${I.bolt}</span><span>Apex Admin<small>Content Manager</small></span></div>
+      <div class="side-brand"><span class="bolt">${I.bolt}</span><span>Admin Portal<small>Content Manager</small></span></div>
       ${NAV.map(([id, label, icon]) => `<button class="nav-item" data-nav="${id}">${icon}<span>${label}</span><span class="count" data-count="${id}" hidden></span></button>`).join('')}
       <div class="side-foot">Local-only dashboard · <a href="http://localhost:4321/" target="_blank" rel="noopener">View site ↗</a></div>
     </aside>
@@ -147,7 +147,7 @@ function shell() {
   $$('.nav-item').forEach((b) => b.onclick = () => { location.hash = '#/' + b.dataset.nav; closeSidebar(); });
   $('#theme-btn').onclick = () => {
     S.theme = S.theme === 'dark' ? 'light' : 'dark';
-    localStorage.setItem('apex-admin-theme', S.theme);
+    localStorage.setItem('admin-portal-theme', S.theme);
     document.documentElement.setAttribute('data-theme', S.theme);
     $('#theme-btn').innerHTML = S.theme === 'dark' ? I.sun : I.moon;
   };
@@ -292,7 +292,7 @@ async function viewEditor(slug, kind) {
   const v = {
     title: fm.title || '', slug: fm.slug || '', description: fm.description || '',
     seoTitle: fm.seoTitle || '', seoDescription: fm.seoDescription || '', imageAlt: fm.imageAlt || '', canonical: fm.canonical || '',
-    author: fm.author || 'Apex Electric Estimating Inc', date: fm.date ? String(fm.date).slice(0, 10) : new Date().toISOString().slice(0, 10),
+    author: fm.author || 'Site Admin', date: fm.date ? String(fm.date).slice(0, 10) : new Date().toISOString().slice(0, 10),
     image: fm.image || '', category: tags[0] || '', tags: tags.slice(1).join(', '), draft: fm.draft !== false && !isNew ? true : fm.draft === true,
   };
   $('#view').innerHTML = `
@@ -306,7 +306,7 @@ async function viewEditor(slug, kind) {
     <div class="editor-layout">
       <div>
         <div class="card card-pad" style="margin-bottom:16px">
-          <div class="field"><label>Title <span class="req">*</span></label><input type="text" id="f-title" maxlength="200" value="${esc(v.title)}" placeholder="e.g. How Electrical Estimating Wins More Bids" /><span class="counter" id="c-title"></span></div>
+          <div class="field"><label>Title <span class="req">*</span></label><input type="text" id="f-title" maxlength="200" value="${esc(v.title)}" placeholder="e.g. Complete Guide to Technical SEO" /><span class="counter" id="c-title"></span></div>
           <div class="form-grid">
             <div class="field"><label>URL slug <span class="req">*</span></label><input type="text" id="f-slug" value="${esc(v.slug)}" placeholder="auto-from-title" /><span class="hint">yoursite.com/blog/<b id="slug-echo">${esc(v.slug || '…')}</b>/</span></div>
             <div class="field"><label>Publication date</label><input type="date" id="f-date" value="${esc(v.date)}" /></div>
@@ -323,7 +323,7 @@ async function viewEditor(slug, kind) {
           <h3 style="font-family:var(--font-display);font-size:14px;margin-bottom:12px">Publishing</h3>
           <div class="field"><label>Author</label><input type="text" id="f-author" value="${esc(v.author)}" /></div>
           <div class="field"><label>Category</label><select id="f-category"><option value="">— None —</option>${catList.map((c) => `<option ${c === v.category ? 'selected' : ''}>${esc(c)}</option>`).join('')}</select></div>
-          <div class="field"><label>Extra tags <span class="hint">(comma-separated)</span></label><input type="text" id="f-tags" value="${esc(v.tags)}" placeholder="estimating, takeoff" /></div>
+          <div class="field"><label>Extra tags <span class="hint">(comma-separated)</span></label><input type="text" id="f-tags" value="${esc(v.tags)}" placeholder="seo, guide" /></div>
           <label class="check-row"><input type="checkbox" id="f-news" ${isNews ? 'checked' : ''} /> Also publish as News</label>
         </div>
         <div class="card card-pad">
@@ -335,7 +335,7 @@ async function viewEditor(slug, kind) {
         <div class="card card-pad">
           <h3 style="font-family:var(--font-display);font-size:14px;margin-bottom:12px">SEO preview</h3>
           <div class="serp">
-            <div class="s-url"><span class="favicon">⚡</span><span id="serp-url">apexelectricalestimatingllc.com › blog › ${esc(v.slug || '…')}</span></div>
+            <div class="s-url"><span class="favicon">⚡</span><span id="serp-url">${esc((S.settings?.url || 'https://yourdomain.com').replace(/^https?:\/\//, ''))} › blog › ${esc(v.slug || '…')}</span></div>
             <div class="s-title" id="serp-title">${esc(v.seoTitle || v.title || 'Your title will appear here')}</div>
             <div class="s-desc" id="serp-desc">${esc(v.seoDescription || v.description || 'Your meta description will appear here in Google search results.')}</div>
           </div>
@@ -362,7 +362,7 @@ async function viewEditor(slug, kind) {
     $('#c-desc').textContent = `${d}/320 · Google shows ~160 chars`; $('#c-desc').classList.toggle('over', d > 160);
     $('#serp-title').textContent = ($('#f-seotitle').value || $('#f-title').value || 'Your title will appear here').slice(0, 70);
     $('#serp-desc').textContent = ($('#f-seodesc').value || $('#f-desc').value || 'Your meta description will appear here.').slice(0, 170);
-    $('#serp-url').textContent = 'apexelectricalestimatingllc.com › blog › ' + ($('#f-slug').value || '…');
+    $('#serp-url').textContent = (S.settings?.url || 'https://yourdomain.com').replace(/^https?:\/\//, '') + ' › blog › ' + ($('#f-slug').value || '…');
     $('#slug-echo').textContent = $('#f-slug').value || '…';
   };
   let slugTouched = !isNew && !!v.slug;
@@ -482,7 +482,7 @@ function reviewEditor(r = null) {
     title: r ? 'Edit review' : 'Add client review', wide: true,
     body: `<div class="form-grid">
       <div class="field"><label>Company name <span class="req">*</span></label><input type="text" id="r-company" value="${esc(r?.company || '')}" /></div>
-      <div class="field"><label>Business type / service</label><input type="text" id="r-type" value="${esc(r?.businessType || '')}" placeholder="Electrical contractor" /></div>
+      <div class="field"><label>Business type / service</label><input type="text" id="r-type" value="${esc(r?.businessType || '')}" placeholder="SaaS / Agency / Retail" /></div>
       <div class="field"><label>Contact name</label><input type="text" id="r-contact" value="${esc(r?.contact || '')}" /></div>
       <div class="field"><label>Position / title</label><input type="text" id="r-position" value="${esc(r?.position || '')}" placeholder="Owner, Project Manager…" /></div>
       <div class="field"><label>Rating</label><select id="r-rating"><option value="">No rating</option>${[5, 4, 3, 2, 1].map((n) => `<option value="${n}" ${Number(r?.rating) === n ? 'selected' : ''}>${'★'.repeat(n)} (${n})</option>`).join('')}</select></div>
@@ -556,8 +556,8 @@ function clientEditor(c = null) {
     body: `<div class="form-grid">
       <div class="field"><label>Company name <span class="req">*</span></label><input type="text" id="c-company" value="${esc(c?.company || '')}" /></div>
       <div class="field"><label>Contact person</label><input type="text" id="c-contact" value="${esc(c?.contactName || '')}" /></div>
-      <div class="field"><label>Industry</label><input type="text" id="c-industry" value="${esc(c?.industry || '')}" placeholder="Electrical contracting" /></div>
-      <div class="field"><label>Location</label><input type="text" id="c-location" value="${esc(c?.location || '')}" placeholder="Totowa, NJ" /></div>
+      <div class="field"><label>Industry</label><input type="text" id="c-industry" value="${esc(c?.industry || '')}" placeholder="Technology / Services" /></div>
+      <div class="field"><label>Location</label><input type="text" id="c-location" value="${esc(c?.location || '')}" placeholder="New York, NY" /></div>
       <div class="field"><label>Website</label><input type="url" id="c-website" value="${esc(c?.website || '')}" placeholder="https://…" /></div>
       <div class="field"><label>Contact email <span class="hint">(optional, private)</span></label><input type="email" id="c-email" value="${esc(c?.contactEmail || '')}" /></div>
     </div>
@@ -685,7 +685,7 @@ async function viewSettings() {
       <div style="display:flex;flex-direction:column;gap:16px">
         <div class="card card-pad"><h2 style="font-family:var(--font-display);font-size:15px;margin-bottom:14px">Business identity</h2>
           ${f('s-name', 'Legal name', s.name)}${f('s-dba', 'Display name (DBA)', s.dba)}
-          <div class="form-grid">${f('s-phone', 'Phone (display)', s.phone)}${f('s-raw', 'Phone (raw)', s.phoneRaw, 'digits only, e.g. +18623667732')}</div>
+          <div class="form-grid">${f('s-phone', 'Phone (display)', s.phone)}${f('s-raw', 'Phone (raw)', s.phoneRaw, 'digits only, e.g. +15550000000')}</div>
           ${f('s-email', 'Email', s.email)}${f('s-url', 'Website URL', s.url)}
         </div>
         <div class="card card-pad"><h2 style="font-family:var(--font-display);font-size:15px;margin-bottom:14px">Address & hours</h2>
@@ -755,6 +755,6 @@ async function boot() {
     try { await api('/session'); shell(); api('/stats').then(setCounts).catch(() => {}); route(); }
     catch { showAuth(); }
   } catch {
-    $('#app').innerHTML = '<div class="auth-screen"><div class="auth-card"><div class="auth-logo"><span class="bolt">⚡</span> Apex Admin</div><p class="auth-sub">Cannot reach the admin server. Start it with <b>npm run admin</b>.</p></div></div>';
+    $('#app').innerHTML = '<div class="auth-screen"><div class="auth-card"><div class="auth-logo"><span class="bolt">⚡</span> Admin Portal</div><p class="auth-sub">Cannot reach the admin server. Start it with <b>npm run start:local</b>.</p></div></div>';
   }
 })();

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Static Site — Powered by Admin Portal</title>
+  <meta name="description" content="Manage every page SEO title, meta description, hero image, and header contact info live from /admin/." />
+</head>
+<body style="font-family:system-ui,sans-serif;margin:0;color:#0F172A;">
+  <div style="background:#0B1120;color:#FFFFFF;padding:0.5rem 1rem;text-align:center;font-size:0.875rem;">
+    <span data-admin-announcement>Welcome — customize your announcement text from /admin/</span>
+  </div>
+
+  <header style="display:flex;justify-content:space-between;align-items:center;padding:1rem 2rem;border-bottom:1px solid #E2E8F0;">
+    <div style="display:flex;align-items:center;gap:0.75rem;font-weight:700;">
+      <img data-admin-logo src="" alt="Brand Logo" style="height:32px;display:none;" onload="this.style.display='block'" />
+      <span>My Brand</span>
+    </div>
+    <nav style="display:flex;gap:1.25rem;align-items:center;">
+      <a href="tel:+15550000000" style="color:#1D4ED8;text-decoration:none;font-weight:600;">+1 (555) 000-0000</a>
+      <a href="mailto:hello@example.com" style="color:#0F172A;text-decoration:none;">hello@example.com</a>
+      <a href="/admin/" style="background:#0B1120;color:#FFF;padding:0.45rem 0.9rem;border-radius:999px;text-decoration:none;font-size:0.85rem;">Admin Portal</a>
+    </nav>
+  </header>
+
+  <main style="max-width:900px;margin:4rem auto;padding:0 1.5rem;text-align:center;">
+    <h1 data-admin-hero-title style="font-size:2.5rem;margin-bottom:1rem;">Edit This Page Live From /admin/</h1>
+    <p data-admin-hero-subtitle style="color:#475569;font-size:1.125rem;margin-bottom:2rem;">
+      Change SEO title, description, H1 heading, hero banner image, and CTA link without rebuilding static HTML.
+    </p>
+    <a data-admin-hero-cta href="/contact/" style="display:inline-block;background:#1D4ED8;color:#FFF;padding:0.85rem 1.75rem;border-radius:999px;text-decoration:none;font-weight:600;">
+      Get Started
+    </a>
+  </main>
+
+  <script src="/scripts/live-overrides.js" defer></script>
+</body>
+</html>

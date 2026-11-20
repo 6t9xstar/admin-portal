@@ -118,6 +118,23 @@ Security is first-class across both modes:
 
 ---
 
+## AI Agent Skill (`skills/admin-portal/`)
+
+AI coding assistants (Claude Code, Cursor, Gemini CLI, Codex, Antigravity) can install the built-in setup skill directly from this repository:
+
+```bash
+npx skills add 6t9xstar/admin-portal
+```
+
+See [`skills/admin-portal/SKILL.md`](skills/admin-portal/SKILL.md) and [`examples/html-starter/index.html`](examples/html-starter/index.html) for semantic `data-admin-*` hooks and integration patterns.
+
+---
+
+## Contributing & Security
+
+- Read [`CONTRIBUTING.md`](CONTRIBUTING.md) before opening a Pull Request.
+- Review [`SECURITY.md`](SECURITY.md) for security model details and responsible disclosure.
+
 ## License
 
 Released under the [MIT License](LICENSE). Free for personal, commercial, and client projects.

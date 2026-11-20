@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Apex Admin — local-first content management server.
+ * Admin Portal — local-first static site content management server.
  *
  * The public site is Astro STATIC output on shared hosting: there is no
  * production database, so this dashboard manages the real content sources
@@ -247,7 +247,7 @@ const server = http.createServer(async (req, res) => {
         const conf = { salt, secret, passwordHash: hashPassword(b.password, salt), createdAt: new Date().toISOString() };
         await atomicWrite(CONFIG_FILE, JSON.stringify(conf, null, 2));
         logActivity('setup', 'admin password created');
-        res.setHeader('Set-Cookie', `apex_admin=${makeToken(secret)}; HttpOnly; SameSite=Strict; Path=/; Max-Age=${SESSION_HOURS * 3600}`);
+        res.setHeader('Set-Cookie', `admin_portal_session=${makeToken(secret)}; HttpOnly; SameSite=Strict; Path=/; Max-Age=${SESSION_HOURS * 3600}`);
         return json(res, 200, { success: true });
       }
       if (p === '/api/login' && method === 'POST') {
@@ -260,16 +260,16 @@ const server = http.createServer(async (req, res) => {
         if (!ok) { bumpAttempt(ip); return json(res, 401, { error: 'Wrong password' }); }
         loginAttempts.delete(ip);
         logActivity('login', 'success');
-        res.setHeader('Set-Cookie', `apex_admin=${makeToken(cfg.secret)}; HttpOnly; SameSite=Strict; Path=/; Max-Age=${SESSION_HOURS * 3600}`);
+        res.setHeader('Set-Cookie', `admin_portal_session=${makeToken(cfg.secret)}; HttpOnly; SameSite=Strict; Path=/; Max-Age=${SESSION_HOURS * 3600}`);
         return json(res, 200, { success: true });
       }
 
       // everything else requires a session
-      if (!cfg || !validToken(getCookie(req, 'apex_admin'), cfg.secret)) return json(res, 401, { error: 'Not authenticated' });
+      if (!cfg || !validToken(getCookie(req, 'admin_portal_session'), cfg.secret)) return json(res, 401, { error: 'Not authenticated' });
 
       if (p === '/api/session' && method === 'GET') return json(res, 200, { authenticated: true });
       if (p === '/api/logout' && method === 'POST') {
-        res.setHeader('Set-Cookie', 'apex_admin=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0');
+        res.setHeader('Set-Cookie', 'admin_portal_session=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0');
         return json(res, 200, { success: true });
       }
 
@@ -516,7 +516,9 @@ const server = http.createServer(async (req, res) => {
 
     /* ---- static admin UI ---- */
     let rel = p === '/' ? '/index.html' : p;
-    const abs = safePath('admin/public' + rel, [path.join(__dirname, 'public')]);
+    const publicRoot = path.join(__dirname, 'public');
+    const candidate = path.resolve(publicRoot, rel.replace(/^\/+/, ''));
+    const abs = !rel.includes('..') && (candidate === publicRoot || candidate.startsWith(publicRoot + path.sep)) ? candidate : null;
     if (!abs || !fs.existsSync(abs) || !fs.statSync(abs).isFile()) {
       res.writeHead(404, { 'Content-Type': 'text/plain' }); return res.end('Not found');
     }
@@ -529,5 +531,5 @@ const server = http.createServer(async (req, res) => {
 });
 
 server.listen(PORT, HOST, () => {
-  console.log(`\n  Apex Admin → http://${HOST}:${PORT}\n  Bound to localhost only — never exposed to the public site.\n  ${loadConfig() ? 'Login with your admin password.' : 'First run: create your admin password in the browser.'}\n`);
+  console.log(`\n  Admin Portal → http://${HOST}:${PORT}\n  Bound to localhost only — never exposed to the public site.\n  ${loadConfig() ? 'Login with your admin password.' : 'First run: create your admin password in the browser.'}\n`);
 });

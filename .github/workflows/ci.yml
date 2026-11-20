@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Check JavaScript syntax & JSON configs
+        run: |
+          npm run check:syntax
+          node -e "for (const f of ['package.json', 'hosted-php/site-overrides.json', 'hosted-php/page-overrides.json']) JSON.parse(require('fs').readFileSync(f, 'utf8'));"
+
+      - name: Setup PHP & check PHP syntax
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
+      - name: Lint PHP API
+        run: php -l hosted-php/admin/api/index.php
